@@ -1,33 +1,54 @@
-// server.js
 const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
-
+const mongoose = require('mongoose');
+const cors = require('cors')
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server);
+const io = socketIo(server, {
+    cors: {
+        origin: "http://localhost:3000",
+        methods: ["GET", "POST"]
+    }
+})
+// Connect to MongoDB
+mongoose.connect('mongodb://localhost:27017/mern-socket-app', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+})
+// Middleware
+app.use(cors());
+app.use(express.json())
 
-// Mock data
-const markers = [
-  { lat: 37.7749, lng: -122.4194, topic: 'Marker 1', explanation: 'Explanation 1' },
-  { lat: 34.0522, lng: -118.2437, topic: 'Marker 2', explanation: 'Explanation 2' },
-];
+// Socket.io Connection
 
-io.on('connection', (socket) => {
-  console.log('New client connected');
-
-  // Send initial markers data
-  socket.emit('update', markers);
-
-  // Optional: Handle incoming data and broadcast updates
-  socket.on('update', (data) => {
-    io.emit('update', data);
-  });
-
-  socket.on('disconnect', () => {
-    console.log('Client disconnected');
-  });
+app.post('/api/map-data', async (req, res) => {
+  const {mapData} = req.body;
+  console.log(req.body);
+  
+  try {
+      io.emit('init', mapData);
+      res.status(200).send('Data received and saved');
+  } catch (error) {
+      res.status(500).send('Error saving data');
+  }
 });
 
-const PORT = process.env.PORT || 10000;
+app.get("/", (req, res) => {
+  res.json("tiugersfd")
+})
+
+
+
+io.on('connection', (socket) => {
+    console.log('New client connected')
+    
+    // socket.emit('init', messages);
+
+    socket.on('disconnect', () => {
+        console.log('Client disconnected');
+    });
+})
+// Start server
+const PORT = process.env.PORT || 5200;
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));

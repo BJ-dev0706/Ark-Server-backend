@@ -1,7 +1,6 @@
 const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
-const mongoose = require('mongoose');
 const cors = require('cors')
 const app = express();
 const server = http.createServer(app);
@@ -11,11 +10,7 @@ const io = socketIo(server, {
         methods: ["GET", "POST"]
     }
 })
-// Connect to MongoDB
-mongoose.connect('mongodb://localhost:27017/mern-socket-app', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-})
+
 // Middleware
 app.use(cors());
 app.use(express.json())

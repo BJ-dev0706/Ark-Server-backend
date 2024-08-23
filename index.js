@@ -34,6 +34,10 @@ app.get("/", (req, res) => {
 })
 
 
+app.get('/', async (req, res) => {
+  console.log("**************");
+})
+
 
 io.on('connection', (socket) => {
     console.log('New client connected')

@@ -30,14 +30,8 @@ app.post('/api/map-data', async (req, res) => {
 });
 
 app.get("/", (req, res) => {
-  res.json("tiugersfd")
+  res.json("Hello, Rory!")
 })
-
-
-app.get('/', async (req, res) => {
-  console.log("**************");
-})
-
 
 io.on('connection', (socket) => {
     console.log('New client connected')

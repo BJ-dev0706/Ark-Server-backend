@@ -19,7 +19,7 @@ app.use(express.json())
 
 app.post('/api/map-data', async (req, res) => {
   const {mapData} = req.body;
-  console.log(req);
+  console.log(JSON.stringify(req.body));
   
   try {
       io.emit('init', mapData);
